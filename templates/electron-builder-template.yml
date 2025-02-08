@@ -25,7 +25,7 @@ mac:
   # - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
 dmg:
-  artifactName: ${name}-${version}-${arch}.${ext}
+  artifactName: ${name}-${version}-${env.PLATFORM_ID}-${arch}.${ext}
 linux:
   target:
     - AppImage

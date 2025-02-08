@@ -80,19 +80,21 @@ jobs:
       # macOS WITHOUT code signing
       #---------------------------------------------------------------------------------------
       - name: build and upload the app WITHOUT code signing (macOS x86)
-        if: matrix.platform == 'macos-13' && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'false'
+        if: (matrix.platform == 'macos-13' || matrix.platform == 'macos-latest') && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          PLATFORM_ID: ${{ matrix.platform }}
         run: |
           yarn build:mac-x64
           ls dist
 
       - name: build and upload the app WITHOUT code signing (macOS arm64)
-        if: matrix.platform == 'macos-latest' && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'false'
+        if: (matrix.platform == 'macos-13' || matrix.platform == 'macos-latest') && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          PLATFORM_ID: ${{ matrix.platform }}
         run: |
           yarn build:mac-arm64
           ls dist
@@ -101,7 +103,7 @@ jobs:
       #---------------------------------------------------------------------------------------
       # Note this issue regarding the if condition: https://github.com/actions/runner/issues/1173
       - name: build and upload the app WITH code signing (macOS x86)
-        if: matrix.platform == 'macos-13' && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'true'
+        if: (matrix.platform == 'macos-13' || matrix.platform == 'macos-latest') && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
@@ -109,12 +111,13 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           DEBUG: electron-osx-sign*,electron-notarize*
+          PLATFORM_ID: ${{ matrix.platform }}
         run: |
           yarn build:mac-x64
           ls dist
 
       - name: build and upload the app WITH code signing (macOS arm64)
-        if: matrix.platform == 'macos-latest' && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'true'
+        if: (matrix.platform == 'macos-13' || matrix.platform == 'macos-latest') && steps.shouldMacOSCodeSign.outputs.MACOS_CODE_SIGNING == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
@@ -122,6 +125,7 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           DEBUG: electron-osx-sign*,electron-notarize*
+          PLATFORM_ID: ${{ matrix.platform }}
         run: |
           yarn build:mac-arm64
           ls dist
